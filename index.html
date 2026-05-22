@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0b1220" id="themeMetaColor">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Luna AI">
+<link rel="manifest" href="manifest.json">
+<title>Luna Smart Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ===== CSS VARS ===== */
+:root{
+  --bg:#0b1220;
+  --card:#141c2e;
+  --card2:#1a2338;
+  --item:#111927;
+  --text:#e8eaf0;
+  --sub:#5a6480;
+  --hdr:#0e1828;
+  --accent:#347dff;
+  --accent2:#0f91d5;
+  --sh-light:rgba(255,255,255,0.06);
+  --sh-dark:rgba(0,0,0,0.55);
+  --sh-x:8px; --sh-y:8px; --sh-blur:14px; --sh-spread:0px;
+  --sh-radius:24px;
+  --inset-x:2px; --inset-y:2px;
+  --sh-inset-blur:5px; --sh-inset-spread:0px;
+  --mic-size:180px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  display:flex;justify-content:center;align-items:center;
+  transition:background .35s,color .35s;
+}
+
+.phone{
+  width:100%;max-width:430px;height:100dvh;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  overflow:hidden;position:relative;
+  transition:background .35s;
+}
+
+/* ===== NEO SHADOW ===== */
+.neo{
+  box-shadow:
+    calc(var(--sh-x)*-1) calc(var(--sh-y)*-1) var(--sh-blur) var(--sh-spread) var(--sh-light),
+    var(--sh-x) var(--sh-y) var(--sh-blur) var(--sh-spread) var(--sh-dark);
+  border-radius:var(--sh-radius);
+  transition:box-shadow .3s,border-radius .3s,background .35s;
+}
+
+/* ===== HEADER ===== */
+.hdr{
+  flex-shrink:0;padding:10px 14px;min-height:72px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--hdr);gap:10px;
+  box-shadow:0 3px 12px rgba(0,0,0,.2);
+  transition:background .35s;
+}
+.hdr-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.ava{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--card2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;cursor:pointer;flex-shrink:0;overflow:hidden;
+  box-shadow:calc(var(--sh-x)*-1) calc(var(--sh-y)*-1) var(--sh-blur) var(--sh-light),var(--sh-x) var(--sh-y) var(--sh-blur) var(--sh-dark);
+  transition:background .35s;
+}
+.ava img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.hdr-txt{min-width:0;flex:1;}
+.hdr-txt h1{font-size:clamp(20px,7vw,28px);font-weight:900;color:var(--text);line-height:1;transition:color .35s;white-space:nowrap;}
+.hdr-txt p{font-size:clamp(10px,2.8vw,12px);font-weight:700;color:var(--sub);transition:color .35s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sasa-pill{
+  padding:9px clamp(10px,3.5vw,16px);border-radius:30px;
+  background:var(--accent2);color:white;
+  font-size:clamp(11px,3.2vw,13px);font-weight:900;cursor:pointer;
+  box-shadow:0 5px 14px rgba(15,145,213,.3);
+  white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis;
+}
+
+.hdr-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+
+/* TEMA DUGME — jedno elegantno dugme */
+.theme-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--card2);border:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;cursor:pointer;flex-shrink:0;
+  box-shadow:
+    -4px -4px 8px var(--sh-light),
+    4px 4px 8px var(--sh-dark);
+  transition:transform .25s,box-shadow .3s,background .35s;
+  position:relative;overflow:hidden;
+}
+.theme-btn::after{
+  content:"";position:absolute;inset:0;border-radius:50%;
+  background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);
+  pointer-events:none;
+}
+.theme-btn:active{transform:scale(.88);}
+.theme-btn .theme-icon{
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s;
+  display:block;
+}
+
+.sasa-pill{
+  padding:10px 16px;border-radius:30px;
+  background:var(--accent2);color:white;
+  font-size:13px;font-weight:900;cursor:pointer;
+  box-shadow:0 5px 14px rgba(15,145,213,.3);white-space:nowrap;
+}
+
+/* ===== SCROLL ===== */
+.scroll{flex:1;overflow-y:auto;padding:10px 12px 14px;-webkit-overflow-scrolling:touch;}
+.scroll::-webkit-scrollbar{width:3px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--sub);border-radius:2px;}
+
+/* ===== TOP GRID ===== */
+.top-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.mini-card{
+  height:clamp(96px,26vw,140px);
+  display:flex;align-items:center;gap:10px;padding:12px;
+  overflow:hidden;position:relative;
+  background:var(--card);cursor:pointer;
+  transition:background .35s;
+}
+.gap10{height:10px;}
+.ci{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--item);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;overflow:hidden;cursor:pointer;
+  transition:background .35s;
+}
+.ci img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.ct{font-size:18px;font-weight:900;color:var(--text);transition:color .35s;}
+.bdg{
+  position:absolute;top:6px;right:6px;
+  min-width:28px;height:28px;border-radius:20px;
+  padding:0 6px;
+  background:linear-gradient(145deg,#ff4444,#c0392b);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:900;color:white;
+  box-shadow:
+    -2px -2px 4px rgba(255,100,100,.35),
+    2px 2px 8px rgba(0,0,0,.45),
+    0 0 0 2px rgba(255,255,255,.12) inset;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.bdg::before{
+  content:"";position:absolute;top:2px;left:4px;right:4px;height:40%;
+  background:linear-gradient(to bottom,rgba(255,255,255,.45),transparent);
+  border-radius:10px;pointer-events:none;
+}
+@keyframes bdgPop{0%{transform:scale(1)}40%{transform:scale(1.35)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+.bdg.pop{animation:bdgPop .4s cubic-bezier(.34,1.56,.64,1);}
+
+.preview-card{
+  background:var(--card);
+  padding:11px 13px;overflow-y:auto;
+  min-height:clamp(96px,26vw,140px);
+  font-size:13px;font-weight:700;line-height:1.65;
+  color:var(--text);transition:color .35s,background .35s;
+}
+.preview-card::-webkit-scrollbar{width:3px;}
+.preview-card::-webkit-scrollbar-thumb{background:var(--sub);}
+
+/* ===== MODES ===== */
+.modes{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px;}
+.mode-btn{
+  height:clamp(54px,14vw,72px);
+  border-radius:var(--sh-radius);
+  background:var(--card2);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;
+  font-size:9px;font-weight:900;color:var(--text);
+  cursor:pointer;position:relative;overflow:hidden;
+  box-shadow:
+    -4px -4px 8px var(--sh-light),
+    4px 4px 8px var(--sh-dark);
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+}
+.mode-btn::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:45%;
+  background:linear-gradient(to bottom,rgba(255,255,255,.08),transparent);
+  pointer-events:none;
+}
+.mode-btn:active{transform:scale(.9);}
+.mode-btn .me{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;line-height:1;overflow:hidden;
+  background:rgba(255,255,255,.08);
+  box-shadow:0 2px 6px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.15);
+  flex-shrink:0;
+}
+.mode-btn .me img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.mode-on{
+  background:linear-gradient(135deg,var(--accent),#1a5cff);
+  color:white;
+  box-shadow:
+    -2px -2px 6px rgba(255,255,255,.15),
+    4px 4px 12px rgba(0,0,0,.5),
+    0 0 18px rgba(52,125,255,.5);
+}
+.mode-on::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
+  pointer-events:none;
+}
+/* mode upload overlay */
+.mode-btn .mode-upload{
+  position:absolute;bottom:3px;right:3px;
+  width:14px;height:14px;border-radius:50%;
+  background:rgba(255,255,255,.22);
+  display:flex;align-items:center;justify-content:center;
+  font-size:8px;cursor:pointer;
+  box-shadow:0 1px 4px rgba(0,0,0,.4);
+  transition:opacity .2s;
+}
+.mode-btn:not(.mode-on) .mode-upload{opacity:.5;}
+
+/* ===== MIC ===== */
+.mic-wrap{display:flex;flex-direction:column;align-items:center;padding:6px 0 4px;}
+.mic{
+  width:var(--mic-size);height:var(--mic-size);
+  border-radius:50%;background:var(--card2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;overflow:hidden;
+  box-shadow:
+    calc(var(--sh-x)*-1.2) calc(var(--sh-y)*-1.2) var(--sh-blur) var(--sh-light),
+    var(--sh-x) var(--sh-y) var(--sh-blur) var(--sh-dark);
+  transition:width .3s,height .3s,box-shadow .3s,background .35s;
+}
+.mic::before{
+  content:"";position:absolute;inset:6px;border-radius:50%;padding:5px;
+  background:linear-gradient(135deg,#00d0ff,#ff00ff,#347dff);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+}
+.mic.on{
+  box-shadow:0 0 0 6px rgba(52,125,255,.25),0 0 0 13px rgba(52,125,255,.1),
+    calc(var(--sh-x)*-1.2) calc(var(--sh-y)*-1.2) var(--sh-blur) var(--sh-light),
+    var(--sh-x) var(--sh-y) var(--sh-blur) var(--sh-dark);
+}
+.mic-inner{
+  width:76%;height:76%;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(44px,12vw,72px);z-index:2;overflow:hidden;
+}
+.mic-inner img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.mic-lbl{margin-top:8px;font-size:10px;font-weight:900;letter-spacing:2px;color:var(--sub);text-align:center;transition:color .35s;}
+
+/* ===== LIST ITEMS ===== */
+.li{
+  background:var(--item);border-radius:14px;
+  padding:9px 11px;margin-bottom:7px;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:8px;
+  font-size:13px;color:var(--text);
+  transition:opacity .35s,transform .35s,max-height .35s,margin .35s,background .35s;
+  overflow:hidden;
+}
+.li.removing{opacity:0;transform:translateX(40px);max-height:0;margin-bottom:0;padding-top:0;padding-bottom:0;}
+.li .sub2{font-size:11px;font-weight:900;color:var(--accent);margin-top:3px;}
+.del{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(145deg,#ff5555,#c0392b);
+  color:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;cursor:pointer;
+  box-shadow:
+    -2px -2px 4px rgba(255,100,100,.3),
+    2px 2px 8px rgba(0,0,0,.5),
+    0 0 0 2px rgba(255,255,255,.12) inset;
+  position:relative;overflow:hidden;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.del::before{
+  content:"";position:absolute;top:2px;left:3px;right:3px;height:40%;
+  background:linear-gradient(to bottom,rgba(255,255,255,.4),transparent);
+  border-radius:10px;pointer-events:none;
+}
+.del:active{transform:scale(.82);box-shadow:0 2px 6px rgba(0,0,0,.5);}
+@keyframes delPulse{0%,100%{box-shadow:-2px -2px 4px rgba(255,100,100,.3),2px 2px 8px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.12) inset}50%{box-shadow:-2px -2px 4px rgba(255,100,100,.3),2px 2px 8px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.12) inset,0 0 10px rgba(255,60,60,.4)}}
+.del{animation:delPulse 2.5s infinite;}
+
+/* ===== ALARM RING ===== */
+.aRing{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
+.aRing.show{display:flex;}
+.ar-ico{font-size:68px;animation:rng .5s infinite alternate;}
+@keyframes rng{from{transform:rotate(-15deg);}to{transform:rotate(15deg);}}
+.aRing h2{color:white;font-size:24px;font-weight:900;text-align:center;padding:0 22px;}
+.aRing p{color:#aaa;font-size:14px;text-align:center;padding:0 22px;}
+.aRing button{padding:14px 44px;border-radius:30px;border:none;background:var(--accent);color:white;font-size:17px;font-weight:900;cursor:pointer;}
+
+/* ===== SETTINGS ===== */
+.settings{
+  position:absolute;inset:0;background:var(--bg);
+  z-index:900;overflow-y:auto;padding:14px;
+  display:none;-webkit-overflow-scrolling:touch;transition:background .35s;
+}
+.settings::-webkit-scrollbar{width:3px;}
+.settings::-webkit-scrollbar-thumb{background:var(--sub);}
+.set-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.set-top h2{font-size:19px;font-weight:900;color:var(--text);transition:color .35s;}
+
+.tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:3px;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:7px 13px;border-radius:20px;background:var(--card2);color:var(--sub);font-size:11px;font-weight:900;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.tab.on{background:var(--accent);color:white;}
+.tab-content{display:none;}
+.tab-content.on{display:block;}
+
+.sc{background:var(--card2);border-radius:18px;padding:12px 14px;margin-bottom:10px;transition:background .35s;}
+.sc label{display:block;font-size:10px;font-weight:900;color:var(--sub);margin-bottom:7px;letter-spacing:.5px;text-transform:uppercase;transition:color .35s;}
+.sc input[type=text],.sc input[type=password],.sc select{
+  width:100%;padding:10px 12px;border:none;border-radius:12px;
+  background:var(--item);color:var(--text);
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;
+  outline:none;-webkit-appearance:none;appearance:none;transition:background .35s,color .35s;
+}
+.sc input[type=range]{
+  width:100%;-webkit-appearance:none;appearance:none;
+  height:6px;border-radius:3px;background:var(--item);outline:none;cursor:pointer;margin-top:4px;
+}
+.sc input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:24px;height:24px;border-radius:50%;
+  background:var(--accent);cursor:pointer;
+  box-shadow:0 2px 8px rgba(52,125,255,.4);
+}
+.sc .rv{text-align:right;font-size:11px;font-weight:900;color:var(--accent);margin-top:4px;}
+.sc button{
+  width:100%;padding:11px;border:none;border-radius:12px;
+  margin-top:7px;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;
+  background:var(--accent);color:white;
+  box-shadow:0 4px 12px rgba(52,125,255,.3);transition:all .2s;
+}
+.sc button.sec{background:var(--card);color:var(--text);box-shadow:none;}
+.sc button.red{background:#c0392b;box-shadow:0 4px 12px rgba(192,57,43,.28);}
+
+.color-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.color-row span{font-size:12px;font-weight:800;color:var(--text);transition:color .35s;}
+.color-row input[type=color]{width:44px;height:30px;border:none;border-radius:8px;cursor:pointer;padding:2px;background:var(--item);}
+
+.stitle{font-size:12px;font-weight:900;color:var(--accent);margin:12px 0 8px;letter-spacing:.5px;}
+.api-ok{color:#4caf50;font-size:12px;font-weight:900;margin-top:5px;}
+.api-err{color:#f44336;font-size:12px;font-weight:900;margin-top:5px;}
+.sh-preview{width:100%;height:52px;border-radius:var(--sh-radius);background:var(--card2);margin:10px 0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--sub);transition:all .3s;}
+
+/* PWA INSTALL */
+.pwa-btn{
+  position:fixed;bottom:14px;right:14px;
+  padding:10px 16px;border-radius:24px;
+  background:var(--accent);color:white;
+  font-size:12px;font-weight:900;cursor:pointer;
+  box-shadow:0 6px 16px rgba(52,125,255,.4);
+  display:none;z-index:800;
+  transition:opacity .3s;
+}
+
+input[type=file]{display:none;}
+</style>
+</head>
+<body>
+<div class="phone" id="app">
+
+<!-- ALARM RING -->
+<div class="aRing" id="aRing">
+  <div class="ar-ico">🔔</div>
+  <h2 id="aTitle">Alarm!</h2>
+  <p id="aDesc"></p>
+  <button onclick="dismissAlarm()">Odbaci ✓</button>
+</div>
+
+<!-- PWA INSTALL BTN -->
+<div class="pwa-btn" id="pwaBtn" onclick="installPWA()">📲 Instaliraj App</div>
+
+<!-- SETTINGS -->
+<div class="settings" id="settingsPanel">
+  <div class="set-top">
+    <h2>⚙️ Podešavanja</h2>
+    <div style="font-size:24px;cursor:pointer;color:var(--sub)" onclick="closeSettings()">✕</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" onclick="switchTab(0)">🤖 API</div>
+    <div class="tab" onclick="switchTab(1)">🌑 Senke</div>
+    <div class="tab" onclick="switchTab(2)">🎨 Boje</div>
+    <div class="tab" onclick="switchTab(3)">🖼️ Slike</div>
+    <div class="tab" onclick="switchTab(4)">🎙️ Mikrofon</div>
+    <div class="tab" onclick="switchTab(5)">🔊 Glas</div>
+    <div class="tab" onclick="switchTab(6)">⚙️ Opšte</div>
+  </div>
+
+  <!-- TAB 0: API -->
+  <div class="tab-content on" id="tc0">
+    <div class="sc">
+      <label>🔑 Groq API Ključ</label>
+      <input type="password" id="apiIn" placeholder="gsk_xxxxxxxxxxxxxxxx" oninput="ls('api',this.value)">
+      <div id="apiSt"></div>
+      <button onclick="testApi()">🧪 Testiraj ključ</button>
+    </div>
+    <div class="sc">
+      <label>🧠 Model</label>
+      <select id="modelSel" onchange="ls('model',this.value)">
+        <option value="llama-3.3-70b-versatile">Llama 3.3 70B ⭐</option>
+        <option value="llama-3.1-8b-instant">Llama 3.1 8B (brži)</option>
+        <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+        <option value="gemma2-9b-it">Gemma 2 9B</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- TAB 1: SENKE -->
+  <div class="tab-content" id="tc1">
+    <div class="sh-preview neo" id="shPreview">Pregled 3D senke</div>
+    <div class="sc"><label>↔ Pomak X</label><input type="range" id="shX" min="0" max="30" value="8" oninput="setSh('sh-x',this.value,'shXv')"><div class="rv" id="shXv">8px</div></div>
+    <div class="sc"><label>↕ Pomak Y</label><input type="range" id="shY" min="0" max="30" value="8" oninput="setSh('sh-y',this.value,'shYv')"><div class="rv" id="shYv">8px</div></div>
+    <div class="sc"><label>☁ Blur (zamućenost)</label><input type="range" id="shB" min="0" max="50" value="14" oninput="setSh('sh-blur',this.value,'shBv')"><div class="rv" id="shBv">14px</div></div>
+    <div class="sc"><label>📐 Spread (širina)</label><input type="range" id="shS" min="-10" max="20" value="0" oninput="setSh('sh-spread',this.value,'shSv')"><div class="rv" id="shSv">0px</div></div>
+    <div class="sc"><label>🔵 Radius ivica</label><input type="range" id="shR" min="0" max="50" value="24" oninput="setSh('sh-radius',this.value,'shRv')"><div class="rv" id="shRv">24px</div></div>
+    <div class="stitle">⬇ Urez (Inset)</div>
+    <div class="sc"><label>↔ Inset X</label><input type="range" id="inX" min="0" max="15" value="2" oninput="setSh('inset-x',this.value,'inXv')"><div class="rv" id="inXv">2px</div></div>
+    <div class="sc"><label>↕ Inset Y</label><input type="range" id="inY" min="0" max="15" value="2" oninput="setSh('inset-y',this.value,'inYv')"><div class="rv" id="inYv">2px</div></div>
+    <div class="sc"><label>☁ Inset blur (dubina)</label><input type="range" id="inB" min="0" max="30" value="5" oninput="setSh('sh-inset-blur',this.value,'inBv')"><div class="rv" id="inBv">5px</div></div>
+    <div class="sc"><label>📐 Inset spread</label><input type="range" id="inS" min="-5" max="10" value="0" oninput="setSh('sh-inset-spread',this.value,'inSv')"><div class="rv" id="inSv">0px</div></div>
+    <div class="stitle">💡 Boje Senki</div>
+    <div class="sc"><label>☀ Svetla senka — Opacity</label><input type="range" id="slOp" min="0" max="100" value="6" oninput="setShLight(this.value)"><div class="rv" id="slOpV">6%</div></div>
+    <div class="sc"><label>🌑 Tamna senka — Opacity</label><input type="range" id="sdOp" min="0" max="100" value="55" oninput="setShDark(this.value)"><div class="rv" id="sdOpV">55%</div></div>
+    <div class="sc"><label>🎨 Boja svetle senke</label><input type="color" id="slColor" value="#ffffff" oninput="setShLightColor(this.value)" style="width:60px;height:36px;border:none;border-radius:10px;cursor:pointer;background:var(--item);padding:2px;"></div>
+    <div class="sc"><label>🎨 Boja tamne senke</label><input type="color" id="sdColor" value="#000000" oninput="setShDarkColor(this.value)" style="width:60px;height:36px;border:none;border-radius:10px;cursor:pointer;background:var(--item);padding:2px;"></div>
+  </div>
+
+  <!-- TAB 2: BOJE -->
+  <div class="tab-content" id="tc2">
+    <div class="sc">
+      <label>🎨 Boje Interfejsa</label>
+      <div class="color-row"><span>🖥 Pozadina</span><input type="color" id="cBg" value="#0b1220" oninput="setColor('bg',this.value)"></div>
+      <div class="color-row"><span>🃏 Kartica</span><input type="color" id="cCard" value="#141c2e" oninput="setColor('card',this.value)"></div>
+      <div class="color-row"><span>🃏 Kartica 2</span><input type="color" id="cCard2" value="#1a2338" oninput="setColor('card2',this.value)"></div>
+      <div class="color-row"><span>📦 Item BG</span><input type="color" id="cItem" value="#111927" oninput="setColor('item',this.value)"></div>
+      <div class="color-row"><span>🔤 Tekst</span><input type="color" id="cText" value="#e8eaf0" oninput="setColor('text',this.value)"></div>
+      <div class="color-row"><span>🔡 Podnaslov</span><input type="color" id="cSub" value="#5a6480" oninput="setColor('sub',this.value)"></div>
+      <div class="color-row"><span>🔝 Header</span><input type="color" id="cHdr" value="#0e1828" oninput="setColor('hdr',this.value)"></div>
+      <div class="color-row"><span>💙 Akcent</span><input type="color" id="cAccent" value="#347dff" oninput="setColor('accent',this.value)"></div>
+      <div class="color-row"><span>🔵 Pill boja</span><input type="color" id="cAccent2" value="#0f91d5" oninput="setColor('accent2',this.value)"></div>
+      <button onclick="applyDarkPreset()">🌙 Dark preset</button>
+      <button class="sec" onclick="applyLightPreset()">☀️ Light preset</button>
+    </div>
+  </div>
+
+  <!-- TAB 3: SLIKE -->
+  <div class="tab-content" id="tc3">
+    <div class="sc"><label>🤖 Avatar</label><button onclick="document.getElementById('avaFile').click()">📁 Postavi sliku</button><button class="sec" onclick="resetImg('avaDiv','ava','🤖')">↩ Reset</button></div>
+    <div class="sc"><label>🎙 Mikrofon</label><button onclick="document.getElementById('micFile').click()">📁 Postavi sliku</button><button class="sec" onclick="resetImg('micInner','mic','🎙️')">↩ Reset</button></div>
+    <div class="sc"><label>📝 Ikonica Beleška</label><button onclick="document.getElementById('noteFile').click()">📁 Postavi sliku</button><button class="sec" onclick="resetImg('noteIcon','noteImg','📝')">↩ Reset</button></div>
+    <div class="sc"><label>🔔 Ikonica Alarm</label><button onclick="document.getElementById('alarmFile').click()">📁 Postavi sliku</button><button class="sec" onclick="resetImg('alarmIcon','alarmImg','🔔')">↩ Reset</button></div>
+  </div>
+
+  <!-- TAB 4: MIKROFON -->
+  <div class="tab-content" id="tc4">
+    <div class="sc">
+      <label>📏 Veličina mikrofona</label>
+      <input type="range" id="micSizeR" min="100" max="280" value="180" oninput="setMicSize(this.value)">
+      <div class="rv" id="micSizeV">180px</div>
+    </div>
+  </div>
+
+  <!-- TAB 5: GLAS -->
+  <div class="tab-content" id="tc5">
+    <div class="sc"><label>🌍 Jezik</label><select id="langSel" onchange="saveLang(this.value)"><option value="sr-RS">Srpski</option><option value="hr-HR">Hrvatski</option><option value="bs-BA">Bosanski</option><option value="en-US">English</option><option value="de-DE">Deutsch</option></select></div>
+    <div class="sc"><label>🔊 Brzina govora</label><input type="range" id="rateR" min="5" max="18" value="10" oninput="saveRate(this.value)"><div class="rv" id="rateV">1.0x</div></div>
+    <div class="sc"><label>🎵 Visina glasa</label><input type="range" id="pitchR" min="5" max="20" value="10" oninput="savePitch(this.value)"><div class="rv" id="pitchV">1.0</div></div>
+  </div>
+
+  <!-- TAB 6: OPŠTE -->
+  <div class="tab-content" id="tc6">
+    <div class="sc"><label>👤 Ime korisnika</label><input type="text" id="nameIn" placeholder="Saša" oninput="saveName(this.value)"></div>
+    <div class="sc"><label>🗑 Obriši sve</label><button class="red" onclick="clearAll()">Obriši sve ⚠️</button></div>
+  </div>
+
+</div><!-- /settings -->
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="ava" id="avaDiv" onclick="document.getElementById('avaFile').click()">🤖</div>
+    <div class="hdr-txt">
+      <h1>Luna</h1>
+      <p id="modeP">Smart AI</p>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <!-- TEMA DUGME -->
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">
+      <span class="theme-icon" id="themeIcon">🌙</span>
+    </button>
+    <div class="sasa-pill" id="sasaBtn" onclick="openSettings()">Saša</div>
+  </div>
+</div>
+
+<!-- MAIN SCROLL -->
+<div class="scroll">
+
+  <div class="top-grid">
+    <div>
+      <div class="mini-card neo" onclick="showNotes()">
+        <div class="ci" id="noteIcon" onclick="event.stopPropagation();document.getElementById('noteFile').click()">📝</div>
+        <div class="ct">Beleške</div>
+        <div class="bdg" id="nBdg">0</div>
+      </div>
+      <div class="gap10"></div>
+      <div class="mini-card neo" onclick="showAlarms()">
+        <div class="ci" id="alarmIcon" onclick="event.stopPropagation();document.getElementById('alarmFile').click()">🔔</div>
+        <div class="ct">Alarmi</div>
+        <div class="bdg" id="aBdg">0</div>
+      </div>
+    </div>
+    <div class="preview-card neo" id="preview">
+      Dobrodošao!<br><br>
+      Postavi <b>Groq API ključ</b> → tab API u podešavanjima.<br><br>🎙️ Dodirni mikrofon.
+    </div>
+  </div>
+
+  <!-- MODES -->
+  <div class="modes">
+    <div class="mode-btn neo mode-on" id="m0" onclick="setMode(0,'Smart AI','Ti si pametna AI sekretarica Luna. Odgovaraj kratko i jasno na srpskom.')">
+      <div class="me" id="mi0">🧠</div>Pametna
+      <div class="mode-upload" onclick="event.stopPropagation();triggerModeImg(0)" title="Promeni sliku">📷</div>
+    </div>
+    <div class="mode-btn neo" id="m1" onclick="setMode(1,'Šaljiva','Ti si šaljiva AI sekretarica Luna. Odgovaraj duhovito na srpskom.')">
+      <div class="me" id="mi1">🤪</div>Šaljiva
+      <div class="mode-upload" onclick="event.stopPropagation();triggerModeImg(1)" title="Promeni sliku">📷</div>
+    </div>
+    <div class="mode-btn neo" id="m2" onclick="setMode(2,'Sveznalica','Ti si enciklopedijska AI sekretarica Luna. Daj detalje na srpskom.')">
+      <div class="me" id="mi2">🔮</div>Sveznal
+      <div class="mode-upload" onclick="event.stopPropagation();triggerModeImg(2)" title="Promeni sliku">📷</div>
+    </div>
+    <div class="mode-btn neo" id="m3" onclick="setMode(3,'Profesional','Ti si profesionalna AI sekretarica Luna. Odgovaraj formalno na srpskom.')">
+      <div class="me" id="mi3">💼</div>Profi
+      <div class="mode-upload" onclick="event.stopPropagation();triggerModeImg(3)" title="Promeni sliku">📷</div>
+    </div>
+  </div>
+
+  <!-- MIC -->
+  <div class="mic-wrap">
+    <div class="mic" id="micBtn" onclick="toggleMic()">
+      <div class="mic-inner" id="micInner">🎙️</div>
+    </div>
+    <div class="mic-lbl" id="micLbl">DODIRNI I KAŽI KOMANDU</div>
+  </div>
+
+</div><!-- /scroll -->
+
+<!-- FILE INPUTS -->
+<input type="file" id="avaFile" accept="image/*">
+<input type="file" id="micFile" accept="image/*">
+<input type="file" id="noteFile" accept="image/*">
+<input type="file" id="alarmFile" accept="image/*">
+<input type="file" id="modeFile0" accept="image/*">
+<input type="file" id="modeFile1" accept="image/*">
+<input type="file" id="modeFile2" accept="image/*">
+<input type="file" id="modeFile3" accept="image/*">
+
+<script>
+/* ===== STATE ===== */
+let notes=[],alarms=[],dark=true,listening=false,rec=null;
+let sysPrompt='Ti si pametna AI sekretarica Luna. Odgovaraj kratko na srpskom.';
+let spRate=1.0,spPitch=1.0,spLang='sr-RS',uName='Saša';
+let shLightColor='#ffffff',shDarkColor='#000000',shLightOp=6,shDarkOp=55;
+let deferredPrompt=null;
+
+const ls=(k,v)=>localStorage.setItem('luna_'+k,v);
+const lg=(k,d='')=>localStorage.getItem('luna_'+k)||d;
+const css=(k,v)=>document.documentElement.style.setProperty('--'+k,v);
+
+/* ===== PWA ===== */
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('pwaBtn').style.display='block';
+});
+function installPWA(){
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('pwaBtn').style.display='none';});
+}
+
+/* ===== SHADOW ===== */
+function applyShadowColors(){
+  const hx=c=>[parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)];
+  const [lr,lg2,lb]=hx(shLightColor);
+  const [dr,dg,db]=hx(shDarkColor);
+  css('sh-light',`rgba(${lr},${lg2},${lb},${(shLightOp/100).toFixed(2)})`);
+  css('sh-dark',`rgba(${dr},${dg},${db},${(shDarkOp/100).toFixed(2)})`);
+  applyNeo();
+}
+function setSh(varName,val,labelId){
+  css(varName,val+'px');
+  if(labelId)document.getElementById(labelId).innerText=val+'px';
+  ls(varName,val);
+  applyNeo();
+}
+function setShLight(v){shLightOp=+v;document.getElementById('slOpV').innerText=v+'%';ls('sl-op',v);applyShadowColors();}
+function setShDark(v){shDarkOp=+v;document.getElementById('sdOpV').innerText=v+'%';ls('sd-op',v);applyShadowColors();}
+function setShLightColor(v){shLightColor=v;ls('sl-color',v);applyShadowColors();}
+function setShDarkColor(v){shDarkColor=v;ls('sd-color',v);applyShadowColors();}
+function applyNeo(){
+  const x=lg('sh-x','8'),y=lg('sh-y','8'),b=lg('sh-blur','14'),s=lg('sh-spread','0'),r=lg('sh-radius','24');
+  const sh=`calc(-${x}px) calc(-${y}px) ${b}px ${s}px var(--sh-light),${x}px ${y}px ${b}px ${s}px var(--sh-dark)`;
+  document.querySelectorAll('.neo').forEach(el=>{el.style.boxShadow=sh;el.style.borderRadius=r+'px';});
+}
+
+/* ===== COLORS ===== */
+function setColor(k,v){css(k,v);ls('c_'+k,v);}
+function applyDarkPreset(){
+  const p={bg:'#0b1220',card:'#141c2e',card2:'#1a2338',item:'#111927',text:'#e8eaf0',sub:'#5a6480',hdr:'#0e1828',accent:'#347dff',accent2:'#0f91d5'};
+  applyColorPreset(p);dark=true;ls('dark','1');updateToggle();
+}
+function applyLightPreset(){
+  const p={bg:'#dfe1e6',card:'#e3e4e9',card2:'#ececec',item:'#f3f3f3',text:'#08112d',sub:'#9aa4b8',hdr:'#f4f4f4',accent:'#347dff',accent2:'#0f91d5'};
+  applyColorPreset(p);dark=false;ls('dark','0');updateToggle();
+}
+function applyColorPreset(p){
+  Object.entries(p).forEach(([k,v])=>{
+    css(k,v);ls('c_'+k,v);
+    const el=document.getElementById('c'+k.charAt(0).toUpperCase()+k.slice(1));
+    if(el)el.value=v;
+  });
+}
+
+/* ===== TEMA TOGGLE ===== */
+function toggleTheme(){
+  if(dark){applyLightPreset();}else{applyDarkPreset();}
+}
+function updateToggle(){
+  const icon=document.getElementById('themeIcon');
+  if(icon){
+    icon.style.transform='scale(0) rotate(180deg)';
+    setTimeout(()=>{
+      icon.innerText=dark?'🌙':'☀️';
+      icon.style.transform='scale(1) rotate(0deg)';
+    },150);
+  }
+  document.getElementById('themeMetaColor').setAttribute('content',dark?'#0b1220':'#dfe1e6');
+}
+
+/* ===== MIC SIZE ===== */
+function setMicSize(v){
+  css('mic-size',v+'px');
+  document.getElementById('micSizeV').innerText=v+'px';
+  ls('mic-size',v);
+}
+
+/* ===== TABS ===== */
+function switchTab(i){
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',i===j));
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('on',i===j));
+}
+
+/* ===== INIT ===== */
+(function init(){
+  // API
+  const api=lg('api');if(api)document.getElementById('apiIn').value=api;
+  document.getElementById('modelSel').value=lg('model','llama-3.3-70b-versatile');
+
+  // TEMA
+  dark=lg('dark','1')==='1';
+  // Primeni sačuvane boje
+  const defs={bg:dark?'#0b1220':'#dfe1e6',card:dark?'#141c2e':'#e3e4e9',card2:dark?'#1a2338':'#ececec',item:dark?'#111927':'#f3f3f3',text:dark?'#e8eaf0':'#08112d',sub:dark?'#5a6480':'#9aa4b8',hdr:dark?'#0e1828':'#f4f4f4',accent:'#347dff',accent2:'#0f91d5'};
+  Object.entries(defs).forEach(([k,def])=>{
+    const v=lg('c_'+k,def);css(k,v);
+    const el=document.getElementById('c'+k.charAt(0).toUpperCase()+k.slice(1));
+    if(el)el.value=v;
+  });
+  updateToggle();
+
+  // SHADOW
+  const shF=[['sh-x','shX','shXv'],['sh-y','shY','shYv'],['sh-blur','shB','shBv'],['sh-spread','shS','shSv'],['sh-radius','shR','shRv'],['inset-x','inX','inXv'],['inset-y','inY','inYv'],['sh-inset-blur','inB','inBv'],['sh-inset-spread','inS','inSv']];
+  shF.forEach(([k,rid,vid])=>{
+    const v=lg(k);
+    if(v){document.getElementById(rid).value=v;document.getElementById(vid).innerText=v+'px';css(k,v+'px');}
+  });
+  shLightOp=+lg('sl-op','6');shDarkOp=+lg('sd-op','55');
+  shLightColor=lg('sl-color','#ffffff');shDarkColor=lg('sd-color','#000000');
+  document.getElementById('slOp').value=shLightOp;document.getElementById('sdOp').value=shDarkOp;
+  document.getElementById('slOpV').innerText=shLightOp+'%';document.getElementById('sdOpV').innerText=shDarkOp+'%';
+  document.getElementById('slColor').value=shLightColor;document.getElementById('sdColor').value=shDarkColor;
+  applyShadowColors();
+
+  // MIC SIZE
+  const ms=lg('mic-size','180');
+  document.getElementById('micSizeR').value=ms;document.getElementById('micSizeV').innerText=ms+'px';css('mic-size',ms+'px');
+
+  // VOICE
+  spLang=lg('lang','sr-RS');document.getElementById('langSel').value=spLang;
+  const rt=lg('rate','10');document.getElementById('rateR').value=rt;document.getElementById('rateV').innerText=(rt/10).toFixed(1)+'x';spRate=rt/10;
+  const pt=lg('pitch','10');document.getElementById('pitchR').value=pt;document.getElementById('pitchV').innerText=(pt/10).toFixed(1);spPitch=pt/10;
+
+  // NAME
+  uName=lg('name','Saša');document.getElementById('nameIn').value=uName;document.getElementById('sasaBtn').innerText=uName;
+
+  // IMAGES
+  ['ava','mic','noteImg','alarmImg'].forEach(k=>{
+    const src=lg(k);if(!src)return;
+    const targets={ava:'avaDiv',mic:'micInner',noteImg:'noteIcon',alarmImg:'alarmIcon'};
+    document.getElementById(targets[k]).innerHTML=`<img src="${src}">`;
+  });
+  // MODE IMAGES
+  for(let i=0;i<4;i++){const src=lg('modeImg'+i);if(src)document.getElementById('mi'+i).innerHTML=`<img src="${src}">`;}
+
+  // DATA
+  notes=JSON.parse(lg('notes','[]'));
+  alarms=JSON.parse(lg('alarms','[]'));
+  updateBadges();scheduleAll();
+  setInterval(checkAlarmsDue,20000);
+  setTimeout(applyNeo,80);
+})();
+
+/* ===== SETTINGS ===== */
+function openSettings(){document.getElementById('settingsPanel').style.display='block';}
+function closeSettings(){document.getElementById('settingsPanel').style.display='none';applyNeo();}
+function saveName(v){uName=v||'Saša';ls('name',uName);document.getElementById('sasaBtn').innerText=uName;}
+function saveLang(v){spLang=v;ls('lang',v);rec=null;}
+function saveRate(v){spRate=v/10;ls('rate',v);document.getElementById('rateV').innerText=(v/10).toFixed(1)+'x';}
+function savePitch(v){spPitch=v/10;ls('pitch',v);document.getElementById('pitchV').innerText=(v/10).toFixed(1);}
+function clearAll(){if(!confirm('Obrisati sve?'))return;localStorage.clear();location.reload();}
+
+/* ===== API TEST ===== */
+async function testApi(){
+  const key=lg('api'),st=document.getElementById('apiSt');
+  if(!key){st.innerHTML='<div class="api-err">⚠ Unesi API ključ</div>';return;}
+  st.innerHTML='<div style="color:var(--sub);font-size:12px;font-weight:900">Testiram...</div>';
+  try{const r=await groqCall('Kaži samo: OK!',key);st.innerHTML=`<div class="api-ok">✓ Radi! "${r.slice(0,40)}"</div>`;}
+  catch(e){st.innerHTML=`<div class="api-err">✗ ${e.message}</div>`;}
+}
+
+/* ===== GROQ ===== */
+async function groqCall(msg,overKey){
+  const key=overKey||lg('api');
+  if(!key)throw new Error('Nema API ključa');
+  const model=lg('model','llama-3.3-70b-versatile');
+  const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+    body:JSON.stringify({model,max_tokens:400,messages:[
+      {role:'system',content:sysPrompt+' Korisnikovo ime je '+uName+'. Max 2-3 rečenice.'},
+      {role:'user',content:msg}
+    ]})
+  });
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||'HTTP '+res.status);}
+  return (await res.json()).choices[0].message.content.trim();
+}
+
+/* ===== TTS ===== */
+function speak(txt){
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(txt);
+  u.lang=spLang;u.rate=spRate;u.pitch=spPitch;
+  window.speechSynthesis.speak(u);
+}
+
+/* ===== MIC ===== */
+function toggleMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setPreview('❌ Koristi Chrome ili Samsung Internet za glasovne komande.');return;}
+  if(!rec){
+    rec=new SR();rec.lang=spLang;rec.continuous=false;rec.interimResults=false;
+    rec.onstart=()=>{listening=true;document.getElementById('micLbl').innerText='🔴 SLUŠAM...';document.getElementById('micBtn').classList.add('on');};
+    rec.onend=()=>{listening=false;document.getElementById('micLbl').innerText='DODIRNI I KAŽI KOMANDU';document.getElementById('micBtn').classList.remove('on');};
+    rec.onerror=(e)=>{listening=false;document.getElementById('micLbl').innerText='GREŠKA: '+e.error;document.getElementById('micBtn').classList.remove('on');};
+    rec.onresult=(e)=>handleCmd(e.results[0][0].transcript.trim());
+  }
+  listening?rec.stop():rec.start();
+}
+
+/* ===== COMMAND ===== */
+async function handleCmd(txt){
+  setPreview('🎤 "'+txt+'"\n\n⏳ Razmišljam...');
+  const lo=txt.toLowerCase();
+  if(lo.includes('koliko je sati')||lo.includes('koje je vreme')){const t=new Date().toLocaleTimeString('sr-RS',{hour:'2-digit',minute:'2-digit'});setPreview('🕐 Sada je '+t);speak('Sada je '+t);return;}
+  if(lo.includes('datum')||lo.includes('koji je dan')){const d=new Date().toLocaleDateString('sr-RS',{weekday:'long',year:'numeric',month:'long',day:'numeric'});setPreview('📅 '+d);speak(d);return;}
+
+  // BELEŠKA
+  if(lo.includes('dodaj belešku')||lo.includes('beleška')||lo.includes('zapamti')||lo.includes('zabeleži')||lo.includes('napiši')){
+    // Izvuci tekst koji dolazi POSLE ključne reči
+    const keywords=['dodaj belešku','beleška','zapamti','zabeleži','napiši'];
+    let noteText='';
+    for(const kw of keywords){
+      const idx=lo.indexOf(kw);
+      if(idx!==-1){
+        noteText=txt.slice(idx+kw.length).trim();
+        break;
+      }
+    }
+    // Ako je tekst prazan pokušaj ostatak bez ključnih reči
+    if(!noteText){
+      noteText=txt.replace(/dodaj belešku|beleška|zapamti|zabeleži|napiši/gi,'').trim();
+    }
+    if(noteText&&noteText.length>0){
+      const entry={id:Date.now(),text:noteText,date:new Date().toLocaleString('sr-RS')};
+      notes.push(entry);
+      try{
+        localStorage.setItem('luna_notes',JSON.stringify(notes));
+        updateBadges(true);
+        showNotes();
+        setPreview('📝 Beleška sačuvana:\n"'+noteText+'"');
+        speak('Beleška sačuvana');
+      }catch(err){
+        notes.pop();
+        setPreview('❌ Greška pri čuvanju: '+err.message);
+        speak('Greška pri čuvanju beleške');
+      }
+    }else{
+      setPreview('⚠️ Reci šta da zapamtim, npr: "Zapamti kupi hleb"');
+      speak('Šta da zapamtim?');
+    }
+    return;
+  }
+
+  // ALARM
+  if(lo.includes('postavi alarm')||lo.includes('napravi podsetnik')||lo.includes('alarm')||lo.includes('podsetnik')||lo.includes('probudi')){
+    const info=txt.replace(/postavi alarm|napravi podsetnik|alarm|podsetnik|probudi me|za/gi,'').trim();
+    const tm=extractTime(lo);
+    addAlarm(info||'Alarm','alarm',tm);
+    setPreview('⏰ Alarm sačuvan'+(tm?' za '+fmt(tm):'')+':\n"'+(info||'Alarm')+'"');
+    speak('Alarm postavljen'+(tm?' za '+fmt(tm):''));
+    showAlarms();return;
+  }
+
+  // TERMIN
+  if(lo.includes('zakaži termin')||lo.includes('termin')||lo.includes('zakaži')||lo.includes('sastanak')){
+    const info=txt.replace(/zakaži termin|termin|zakaži|sastanak|dodaj|u kalendar/gi,'').trim();
+    const tm=extractTime(lo);
+    addAlarm(info||'Termin','termin',tm);
+    setPreview('📅 Termin sačuvan'+(tm?' za '+fmt(tm):'')+':\n"'+(info||'Termin')+'"');
+    speak('Termin zakazan'+(tm?' za '+fmt(tm):''));
+    showAlarms();return;
+  }
+
+  if(lo.includes('pokaži beleške')||lo.includes('moje beleške')){showNotes();speak('Evo tvojih beleški');return;}
+  if(lo.includes('pokaži alarme')||lo.includes('moji alarmi')){showAlarms();speak('Evo alarma');return;}
+  if(!lg('api')){setPreview('⚠️ Postavi Groq API ključ u Podešavanjima.');speak('Postavi API ključ');return;}
+  try{const r=await groqCall(txt);setPreview('🤖 Luna:\n\n'+r);speak(r);}
+  catch(e){setPreview('❌ '+e.message);speak('Greška');}
+}
+
+function setPreview(txt){document.getElementById('preview').innerText=txt;}
+function extractTime(lo){
+  const m=lo.match(/(\d{1,2})[:\s](\d{2})/);if(!m)return null;
+  const now=new Date(),t=new Date(now.getFullYear(),now.getMonth(),now.getDate(),+m[1],+m[2],0);
+  if(t<=now)t.setDate(t.getDate()+1);return t;
+}
+function fmt(d){return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');}
+
+/* ===== NOTES / ALARMS ===== */
+/* ===== NOTES / ALARMS ===== */
+function saveNotes(){
+  try{ls('notes',JSON.stringify(notes));}
+  catch(e){setPreview('❌ Greška čuvanja beleški: '+e.message);}
+}
+function saveAlarms(){
+  try{ls('alarms',JSON.stringify(alarms));}
+  catch(e){setPreview('❌ Greška čuvanja alarma: '+e.message);}
+}
+function addNote(text){
+  if(!text||!text.trim()){setPreview('⚠️ Tekst beleške je prazan.');return false;}
+  const entry={id:Date.now(),text:text.trim(),date:new Date().toLocaleString('sr-RS')};
+  notes.push(entry);
+  saveNotes();
+  updateBadges(true);
+  return true;
+}
+function addAlarm(text,type,tm){
+  const entry={id:Date.now(),text:text||type,date:tm?tm.toLocaleString('sr-RS'):'—',timestamp:tm?tm.getTime():null,type:type};
+  alarms.push(entry);
+  saveAlarms();
+  updateBadges(false,true);
+  if(tm)scheduleOne(entry);
+  return entry;
+}
+function showNotes(){
+  const p=document.getElementById('preview');
+  if(!notes.length){p.innerHTML='<div style="color:var(--sub);font-style:italic;padding:8px">📝 Nema beleški</div>';return;}
+  p.innerHTML=notes.map((n,i)=>`<div class="li" id="li-n-${i}"><div style="flex:1"><div style="font-weight:800">${n.text}</div><div class="sub2">${n.date}</div></div><div class="del" onclick="delNote(${i})">✕</div></div>`).join('');
+}
+function showAlarms(){
+  const p=document.getElementById('preview');
+  if(!alarms.length){p.innerHTML='<div style="color:var(--sub);font-style:italic;padding:8px">🔔 Nema alarma</div>';return;}
+  p.innerHTML=alarms.map((a,i)=>`<div class="li" id="li-a-${i}"><div style="flex:1"><div style="font-weight:800">${a.type==='termin'?'📅':'⏰'} ${a.text}</div><div class="sub2">${a.date}</div></div><div class="del" onclick="delAlarm(${i})">✕</div></div>`).join('');
+}
+function delNote(i){
+  const el=document.getElementById('li-n-'+i);
+  if(el){el.classList.add('removing');setTimeout(()=>{notes.splice(i,1);saveNotes();updateBadges();showNotes();},360);}
+  else{notes.splice(i,1);saveNotes();updateBadges();showNotes();}
+}
+function delAlarm(i){
+  const el=document.getElementById('li-a-'+i);
+  if(el){el.classList.add('removing');setTimeout(()=>{alarms.splice(i,1);saveAlarms();updateBadges();showAlarms();},360);}
+  else{alarms.splice(i,1);saveAlarms();updateBadges();showAlarms();}
+}
+function updateBadges(pulsNote,pulsAlarm){
+  const nb=document.getElementById('nBdg'),ab=document.getElementById('aBdg');
+  nb.innerText=notes.length;ab.innerText=alarms.length;
+  if(pulsNote){nb.classList.remove('pop');void nb.offsetWidth;nb.classList.add('pop');setTimeout(()=>nb.classList.remove('pop'),500);}
+  if(pulsAlarm){ab.classList.remove('pop');void ab.offsetWidth;ab.classList.add('pop');setTimeout(()=>ab.classList.remove('pop'),500);}
+}
+function scheduleAll(){alarms.forEach(a=>{if(a.timestamp&&a.timestamp>Date.now())scheduleOne(a);});}
+function scheduleOne(entry){const d=entry.timestamp-Date.now();if(d<=0)return;setTimeout(()=>fireAlarm(entry),d);}
+function checkAlarmsDue(){const now=Date.now();alarms.forEach(a=>{if(a.timestamp&&Math.abs(a.timestamp-now)<25000)fireAlarm(a);});}
+function fireAlarm(e){
+  document.getElementById('aTitle').innerText=e.type==='termin'?'📅 Termin!':'⏰ Alarm!';
+  document.getElementById('aDesc').innerText=e.text;
+  document.getElementById('aRing').classList.add('show');
+  speak((e.type==='termin'?'Termin: ':'Alarm: ')+e.text);
+}
+function dismissAlarm(){document.getElementById('aRing').classList.remove('show');window.speechSynthesis.cancel();}
+
+/* ===== MODES ===== */
+function setMode(idx,name,sys){
+  for(let i=0;i<4;i++)document.getElementById('m'+i).classList.remove('mode-on');
+  document.getElementById('m'+idx).classList.add('mode-on');
+  document.getElementById('modeP').innerText=name;sysPrompt=sys;speak('Režim: '+name);
+}
+
+/* ===== IMAGE UPLOADS ===== */
+function setupImg(inputId,targetId,storageKey){
+  document.getElementById(inputId).addEventListener('change',function(){
+    const f=this.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{ls(storageKey,ev.target.result);document.getElementById(targetId).innerHTML=`<img src="${ev.target.result}">`;};
+    r.readAsDataURL(f);
+  });
+}
+setupImg('avaFile','avaDiv','ava');
+setupImg('micFile','micInner','mic');
+setupImg('noteFile','noteIcon','noteImg');
+setupImg('alarmFile','alarmIcon','alarmImg');
+
+const modeEmojis=['🧠','🤪','🔮','💼'];
+for(let i=0;i<4;i++){
+  (function(idx){
+    document.getElementById('modeFile'+idx).addEventListener('change',function(){
+      const f=this.files[0];if(!f)return;
+      const r=new FileReader();
+      r.onload=ev=>{
+        ls('modeImg'+idx,ev.target.result);
+        document.getElementById('mi'+idx).innerHTML=`<img src="${ev.target.result}">`;
+      };
+      r.readAsDataURL(f);
+    });
+  })(i);
+}
+
+function triggerModeImg(idx){document.getElementById('modeFile'+idx).click();}
+function resetImg(targetId,storageKey,emoji){localStorage.removeItem('luna_'+storageKey);document.getElementById(targetId).innerText=emoji;}
+</script>
+
+<!-- SERVICE WORKER za PWA -->
+<script>
+if('serviceWorker' in navigator){
+  const swCode=`
+const CACHE='luna-v1';
+const ASSETS=['./',location.href];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
+self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+`;
+  const blob=new Blob([swCode],{type:'application/javascript'});
+  const swUrl=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+}
+</script>
+</body>
+</html>
